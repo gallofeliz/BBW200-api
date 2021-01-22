@@ -2,14 +2,17 @@
 
 import http.server, json, logging, os, socketserver
 from subprocess import check_output
+from retrying import retry
 
 logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] %(message)s')
 
 port = int(os.environ.get('PORT', 8080))
 interface = os.environ.get('INTERFACE', 'hci0')
 
+@retry(stop_max_delay=30000)
 def readBeewiSensor(s_hci, s_mac) :
-   raw_input = check_output(['gatttool', '-i', s_hci, '-b', s_mac, '--char-read', '--handle=0x003f']);
+   logging.info('Reading %s', s_mac)
+   raw_input = check_output(['gatttool', '-i', s_hci, '-b', s_mac, '--char-read', '--handle=0x003f'], timeout=10);
    octet_list  = raw_input.decode('utf-8').split(':')[1].strip().split(' ')
 
    temperature = int(octet_list[2] + octet_list[1], 16)
