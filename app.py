@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.DEBUG, format='[%(levelname)s] %(message)s')
 port = int(os.environ.get('PORT', 8080))
 interface = os.environ.get('INTERFACE', 'hci0')
 
-@retry(stop_max_delay=30000)
+@retry(stop_max_delay=30000, wait_fixed=2000)
 def readBeewiSensor(s_hci, s_mac) :
    logging.info('Reading %s', s_mac)
    raw_input = check_output(['gatttool', '-i', s_hci, '-b', s_mac, '--char-read', '--handle=0x003f'], timeout=10);
