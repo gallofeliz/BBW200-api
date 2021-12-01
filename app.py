@@ -26,7 +26,7 @@ def readBeewiSensor(s_hci, s_mac) :
       'battery': int(octet_list[9], 16)
    }
 
-class Handler(http.server.SimpleHTTPRequestHandler):
+class Handler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         if (self.path == '/favicon.ico'):
             return
